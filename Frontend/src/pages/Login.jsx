@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Eye, EyeOff, Lock, Mail, ArrowUpRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { loginAsync } from '../redux/slice/LoginSlice';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Eye, EyeOff, Lock, Mail, ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginAsync } from "../redux/slice/LoginSlice";
 
 // Email and Password validation function
 const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
@@ -11,30 +11,34 @@ const validatePassword = (password) => password.length >= 6;
 
 const LoginPage = () => {
   const dispatch = useDispatch();
-  
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
-    setEmailError(validateEmail(e.target.value) ? '' : 'Invalid email address');
+    setEmailError(validateEmail(e.target.value) ? "" : "Invalid email address");
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
-    setPasswordError(validatePassword(e.target.value) ? '' : 'Password must be at least 6 characters');
+    setPasswordError(
+      validatePassword(e.target.value)
+        ? ""
+        : "Password must be at least 6 characters"
+    );
   };
 
   const handleSubmit = async () => {
     // Validation before submission
     if (!validateEmail(email)) {
-      setEmailError('Invalid email address');
+      setEmailError("Invalid email address");
       return;
     }
     if (!validatePassword(password)) {
-      setPasswordError('Password must be at least 6 characters');
+      setPasswordError("Password must be at least 6 characters");
       return;
     }
 
@@ -46,10 +50,10 @@ const LoginPage = () => {
 
       const response = await dispatch(loginAsync(loginData));
       console.log(response);
-      
-    //   alert('Login successful');
+
+      //   alert('Login successful');
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
     }
   };
 
@@ -84,7 +88,8 @@ const LoginPage = () => {
               transition={{ delay: 0.4 }}
               className="text-white/80"
             >
-              Streamline your workflow and boost productivity with our innovative solutions.
+              Streamline your workflow and boost productivity with our
+              innovative solutions.
             </motion.p>
           </div>
         </div>
@@ -111,7 +116,10 @@ const LoginPage = () => {
             >
               {/* Email Input */}
               <div className="relative">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Email Address
                 </label>
                 <div className="relative">
@@ -127,12 +135,17 @@ const LoginPage = () => {
                     placeholder="you@example.com"
                   />
                 </div>
-                {emailError && <div className="text-red-500 text-sm">{emailError}</div>}
+                {emailError && (
+                  <div className="text-red-500 text-sm">{emailError}</div>
+                )}
               </div>
 
               {/* Password Input */}
               <div className="relative">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Password
                 </label>
                 <div className="relative">
@@ -148,7 +161,9 @@ const LoginPage = () => {
                     placeholder="Enter your password"
                   />
                 </div>
-                {passwordError && <div className="text-red-500 text-sm">{passwordError}</div>}
+                {passwordError && (
+                  <div className="text-red-500 text-sm">{passwordError}</div>
+                )}
               </div>
 
               {/* Forgot Password */}

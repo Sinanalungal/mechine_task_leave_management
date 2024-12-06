@@ -8,7 +8,7 @@ import Sidebar from './components/Sidebar';
 // import LeaveCalendar from './components/LeaveCalendar';
 // import LeaveApprovals from './components/LeaveApprovals';
 // import Profile from './components/Profile';
-import Login from './components/Login';
+import Login from './pages/Login';
 // import RegisterPage from './components/Register';
 // import OTPVerificationPage from './components/OtpVerification';
 import UserRoutes from './routes/UserRoutes';

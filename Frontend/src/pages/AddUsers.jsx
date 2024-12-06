@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
-import { getAxiosInstance } from '../utils/axiosInstance';
-import { toast } from 'react-hot-toast';
-import { InputField } from './AddUser/InputField';
-import { SubmitButton } from './AddUser/SubmitButton';
-import { PageHeader } from './AddUser/PageHeader';
+import React, { useState } from "react";
+import { getAxiosInstance } from "../utils/axiosInstance";
+import { toast } from "react-hot-toast";
+import { InputField } from "../components/AddUser/InputField";
+import { SubmitButton } from "../components/AddUser/SubmitButton";
+import { PageHeader } from "../components/AddUser/PageHeader";
 
-
-const AddUserComponent= () => {
+const AddUserComponent = () => {
   const [userData, setUserData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone_number: '',
-    department: '',
-    password: '',
-    confirm_password: '',
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone_number: "",
+    department: "",
+    password: "",
+    confirm_password: "",
   });
 
   const [errors, setErrors] = useState({});
@@ -28,21 +27,21 @@ const AddUserComponent= () => {
   };
 
   const validateForm = () => {
-    const newErrors= {};
+    const newErrors = {};
 
     // Validation logic remains the same as in the original component
     if (!userData.first_name.trim()) {
-      newErrors.first_name = 'First name is required';
+      newErrors.first_name = "First name is required";
     }
 
     if (!userData.last_name.trim()) {
-      newErrors.last_name = 'Last name is required';
+      newErrors.last_name = "Last name is required";
     }
 
     if (!userData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(userData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = "Email is invalid";
     }
 
     // ... (rest of the validation logic)
@@ -60,30 +59,30 @@ const AddUserComponent= () => {
 
     try {
       const axiosInstance = await getAxiosInstance();
-      const response = await axiosInstance.post('/user_authentication/users/', {
+      const response = await axiosInstance.post("/user_authentication/users/", {
         first_name: userData.first_name,
         last_name: userData.last_name,
         email: userData.email,
         phone_number: userData.phone_number,
         department: userData.department,
-        password: userData.password, 
+        password: userData.password,
         username: userData.email,
       });
 
       if (response.status === 201) {
-        toast.success('User added successfully!');
+        toast.success("User added successfully!");
         setUserData({
-          first_name: '',
-          last_name: '',
-          email: '',
-          phone_number: '',
-          department: '',
-          password: '',
-          confirm_password: '',
+          first_name: "",
+          last_name: "",
+          email: "",
+          phone_number: "",
+          department: "",
+          password: "",
+          confirm_password: "",
         });
         setErrors({});
       } else {
-        throw new Error('Failed to add user');
+        throw new Error("Failed to add user");
       }
     } catch (error) {
       // Error handling logic remains the same
@@ -91,8 +90,12 @@ const AddUserComponent= () => {
         const { status, data } = error.response;
         if (status === 400) {
           Object.keys(data).forEach((field) => {
-            if (field !== 'username') {
-              toast.error(`${field.charAt(0).toUpperCase() + field.slice(1)}: ${data[field].join(' ')}`);
+            if (field !== "username") {
+              toast.error(
+                `${field.charAt(0).toUpperCase() + field.slice(1)}: ${data[
+                  field
+                ].join(" ")}`
+              );
             }
           });
           setErrors(data);
@@ -100,9 +103,11 @@ const AddUserComponent= () => {
           toast.error(`Unexpected error occurred. Status: ${status}`);
         }
       } else {
-        toast.error('Failed to add user. Please check your network connection.');
+        toast.error(
+          "Failed to add user. Please check your network connection."
+        );
       }
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 
@@ -110,7 +115,10 @@ const AddUserComponent= () => {
     <div className="p-8 rounded-lg font-roboto max-sm:text-xs text-sm xl:text-base bg-white">
       <PageHeader title="Add New User" />
 
-      <form onSubmit={handleSubmit} className="sm:grid grid-cols-2 max-sm:space-y-3 gap-6">
+      <form
+        onSubmit={handleSubmit}
+        className="sm:grid grid-cols-2 max-sm:space-y-3 gap-6"
+      >
         <InputField
           label="First Name"
           name="first_name"

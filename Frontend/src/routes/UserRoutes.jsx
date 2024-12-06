@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import UserPrivateRoute from "./private-routes/UserPrivateRoute";
-import LeaveApplication from '../components/LeaveApplication';
-import LeaveCalendar from '../components/LeaveCalendar';
+import LeaveApplication from '../pages/LeaveApplication';
+import LeaveCalendar from '../pages/LeaveCalendar';
 
 function UserRoutes() {
 

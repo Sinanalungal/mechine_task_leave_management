@@ -14,8 +14,7 @@ import {
   Phone,
 } from "lucide-react";
 import { getAxiosInstance } from "../utils/axiosInstance";
-import { useSelector } from 'react-redux';
-
+import { useSelector } from "react-redux";
 
 const Profile = () => {
   const [profile, setProfile] = useState({
@@ -62,8 +61,7 @@ const Profile = () => {
             },
           };
 
-          console.log(response,userData);
-          
+          console.log(response, userData);
 
           setProfile(updatedProfile);
           setFormData(updatedProfile);

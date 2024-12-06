@@ -1,12 +1,12 @@
 import { Suspense } from "react";
 import ManagerPrivateRoute from "./private-routes/ManagerPrivateRoute";
 import { Route, Routes } from "react-router-dom";
-import Dashboard from "../components/Dashboard";
+import Dashboard from "../pages/Dashboard";
 // import LeaveApplication from '../components/LeaveApplication';
 // import LeaveCalendar from '../components/LeaveCalendar';
-import LeaveApprovals from '../components/LeaveApprovals';
-import Profile from '../components/Profile';
-import AddUserComponent from "../components/AddUsers";
+import LeaveApprovals from '../pages/LeaveApprovals';
+import Profile from '../pages/Profile';
+import AddUserComponent from "../pages/AddUsers";
 
 function ManagerRoutes() {
 
