@@ -7,8 +7,6 @@ from .serializers import (
     LeaveApplicationWriteSerializer, 
     LeaveApplicationReadSerializer,
     LeaveTypeSerializer,
-    EmployeeSerializerForLeaveApprove
-    # LeaveBalanceSerializer
 )
 from user_auth.permissions import IsManagerOrReadOnly
 from django.core.exceptions import ValidationError
@@ -18,16 +16,7 @@ from rest_framework.views import APIView
 
 
 
-# class IsManagerOrReadOnly(permissions.BasePermission):
-#     """
-#     Custom permission to only allow managers to modify users
-#     """
-#     def has_permission(self, request, view):
-#         # Allow all users to read
-#         if request.method in permissions.SAFE_METHODS:
-#             return True
-#         # Only managers can create/modify users
-#         return request.user.is_authenticated and request.user.role == 'manager'
+
 
 
 class LeaveTypeViewSet(viewsets.ModelViewSet):
@@ -216,17 +205,3 @@ class LeaveStatusCountView(APIView):
 
         return Response(counts, status=status.HTTP_200_OK)
 
-# class LeaveBalanceViewSet(viewsets.ReadOnlyModelViewSet):
-#     """
-#     ViewSet for leave balances
-#     """
-#     serializer_class = LeaveBalanceSerializer
-
-    # def get_queryset(self):
-    #     """
-    #     Managers see all leave balances, employees see only their own
-    #     """
-    #     user = self.request.user
-    #     if user.role == 'manager':
-    #         return LeaveBalance.objects.all()
-    #     return LeaveBalance.objects.filter(employee=user)
