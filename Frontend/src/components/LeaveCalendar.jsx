@@ -36,22 +36,19 @@ const LeaveCalendar = () => {
         const fetchLeaveApplications = async () => {
             try {
                 const axiosInstance = await getAxiosInstance()
-                const response = await axiosInstance.get('/leave/leave-applications/', {
-                    // Add any necessary authentication headers
-                    // headers: { 'Authorization': `Bearer ${yourToken}` }
-                });
+                const response = await axiosInstance.get('/leave/leave-applications/', {});
                 
-                // Transform backend data to match component's expected format
-                const transformedLeaveData = response.data.map(leave => ({
+                const transformedLeaveData = response.data.results.map(leave => ({
                     id: leave.id,
-                    name: `Employee ${leave.employee}`, // Replace with actual employee name if available
-                    type: leaveTypes[leave.leave_type]?.name || 'Unknown Leave',
+                    name: `${leave.leave_type?.name}`, 
+                    type: leave.leave_type?.name,
                     startDate: new Date(leave.start_date),
                     endDate: new Date(leave.end_date),
                     status: leave.status.charAt(0).toUpperCase() + leave.status.slice(1),
                     reason: leave.reason
                 }));
-
+                console.log(response.data);
+                
                 setLeaveData(transformedLeaveData);
                 setLoading(false);
             } catch (error) {
@@ -94,64 +91,7 @@ const LeaveCalendar = () => {
 
         return days;
     };
-    // const LoadingScreen = () => {
-    //     return (
-    //         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50">
-    //             <motion.div
-    //                 initial={{ scale: 0.6, opacity: 0 }}
-    //                 animate={{ 
-    //                     scale: [0.6, 1.1, 1],
-    //                     opacity: [0, 1, 1],
-    //                     rotate: [0, 360]
-    //                 }}
-    //                 transition={{
-    //                     duration: 1.5,
-    //                     ease: "easeInOut",
-    //                     times: [0, 0.5, 1],
-    //                     repeat: Infinity,
-    //                     repeatType: "reverse"
-    //                 }}
-    //                 className="mb-6"
-    //             >
-    //                 <Calendar className="w-24 h-24 text-indigo-600 drop-shadow-xl" />
-    //             </motion.div>
-                
-    //             <motion.div
-    //                 initial={{ opacity: 0, y: 20 }}
-    //                 animate={{ opacity: 1, y: 0 }}
-    //                 transition={{ 
-    //                     delay: 0.5,
-    //                     duration: 0.6,
-    //                     type: "spring",
-    //                     stiffness: 100 
-    //                 }}
-    //                 className="flex flex-col items-center"
-    //             >
-    //                 <h2 className="text-2xl font-bold text-indigo-800 mb-2">
-    //                     Loading Leave Calendar
-    //                 </h2>
-    //                 <p className="text-gray-600 text-sm">
-    //                     Fetching leave applications...
-    //                 </p>
-    //             </motion.div>
-
-    //             {/* Subtle background animation */}
-    //             <motion.div 
-    //                 initial={{ opacity: 0 }}
-    //                 animate={{ 
-    //                     opacity: [0, 0.1, 0],
-    //                     scale: [1, 1.5, 2]
-    //                 }}
-    //                 transition={{
-    //                     duration: 3,
-    //                     repeat: Infinity,
-    //                     repeatType: "loop"
-    //                 }}
-    //                 className="absolute inset-0 bg-indigo-200 -z-10"
-    //             />
-    //         </div>
-    //     );
-    // };
+    
 
     const monthNames = [
         'January', 'February', 'March', 'April', 'May', 'June', 
@@ -345,7 +285,7 @@ const LeaveCalendar = () => {
                                         className: `mr-2 sm:mr-3 w-6 h-6 sm:w-8 sm:h-8 text-${leaveTypes[selectedLeave.type]?.color || 'gray'}-600`
                                     })}
                                     <div>
-                                        <h3 className="text-lg sm:text-xl font-bold">{selectedLeave.type}</h3>
+                                        <h3 className="text-lg sm:text-xl font-bold">{selectedLeave?.type}</h3>
                                         {/* <p className="text-xs sm:text-sm text-gray-500"></p> */}
                                     </div>
                                 </div>
@@ -357,6 +297,10 @@ const LeaveCalendar = () => {
                                     <div className="flex justify-between">
                                         <span className="text-gray-600 text-xs sm:text-sm">End Date:</span>
                                         <span className="font-semibold text-xs sm:text-sm">{selectedLeave.endDate.toDateString()}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span className="text-gray-600 text-xs sm:text-sm">Reason:</span>
+                                        <span className=" text-xs sm:text-sm">{selectedLeave?.reason}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="text-gray-600">Status:</span>

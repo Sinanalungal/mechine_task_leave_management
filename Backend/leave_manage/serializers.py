@@ -19,8 +19,18 @@ class EmployeeSerializer(serializers.ModelSerializer):
         model = CustomUser  # Replace with your Employee model name
         fields = ['id', 'profile_picture', 'first_name','last_name', 'department']  # Adjust fields as needed
 
+class LeaveApplicationReadSerializer(serializers.ModelSerializer):
+    employee = EmployeeSerializer(read_only=True)
+    approver = UserSerializer(read_only=True)
 
-class LeaveApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LeaveApplication
+        fields = '__all__'
+        depth = 2
+        read_only_fields = ['status', 'approver', 'duration', 'created_at', 'updated_at']
+
+
+class LeaveApplicationWriteSerializer(serializers.ModelSerializer):
     """
     Enhanced Serializer for leave applications with comprehensive validation
     """
@@ -31,7 +41,7 @@ class LeaveApplicationSerializer(serializers.ModelSerializer):
         model = LeaveApplication
         fields = '__all__'
         read_only_fields = ['status', 'approver', 'duration', 'created_at', 'updated_at']
-        depth = 2
+        # depth = 2
 
     def validate(self, data):
         """
@@ -48,26 +58,18 @@ class LeaveApplicationSerializer(serializers.ModelSerializer):
                 employee=self.context['request'].user,
                 **data
             )
-            leave_application.clean()  # This will run all validations
+            leave_application.clean() 
         except ValidationError as e:
             raise serializers.ValidationError(str(e))
 
         data['duration'] = (data['end_date'] - data['start_date']).days + 1
         return data
 
-# class LeaveBalanceSerializer(serializers.ModelSerializer):
-#     """
-#     Serializer for leave balances
-#     """
-#     employee = UserSerializer(read_only=True)
 
-#     class Meta:
-#         model = LeaveBalance
-#         fields = '__all__'
 
 
 class EmployeeSerializerForLeaveApprove(serializers.ModelSerializer):
     class Meta:
-        model = CustomUser  # Replace with your Employee model name
-        fields = ['id']  # Adjust fields as needed
+        model = CustomUser 
+        fields = ['id']  
 

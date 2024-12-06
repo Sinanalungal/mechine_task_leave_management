@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from .models import LeaveApplication, LeaveType
 # , LeaveBalance
 from .serializers import (
-    LeaveApplicationSerializer, 
+    LeaveApplicationWriteSerializer, 
+    LeaveApplicationReadSerializer,
     LeaveTypeSerializer,
     EmployeeSerializerForLeaveApprove
     # LeaveBalanceSerializer
@@ -39,16 +40,30 @@ class LeaveTypeViewSet(viewsets.ModelViewSet):
     pagination_class = None
 
 
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
+from rest_framework.exceptions import ValidationError
+
 class LeaveApplicationViewSet(viewsets.ModelViewSet):
     """
     Enhanced ViewSet for leave applications with comprehensive validation
     """
-    serializer_class = LeaveApplicationSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ['status']  # Allow filtering by 'status'
     ordering_fields = ['created_at']  # Allow ordering by 'created_at'
 
+    def get_serializer_class(self):
+        """
+        Return different serializer classes for different actions
+        """
+        if self.action in ['create', 'update', 'partial_update']:
+            # Use a serializer with depth 0 for write operations
+            return LeaveApplicationWriteSerializer
+        return LeaveApplicationReadSerializer
 
     def get_queryset(self):
         """
@@ -72,14 +87,25 @@ class LeaveApplicationViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(status=status)
 
         return queryset
-    
+
+    def perform_create(self, serializer):
+        """
+        Automatically set the employee to the current user and validate
+        """
+        try:
+            leave_application = serializer.save(employee=self.request.user)
+            leave_application.clean()
+            leave_application.save()
+        except ValidationError as e:
+            raise serializers.ValidationError(e.message_dict)
+
     @action(detail=False, methods=['GET'], permission_classes=[permissions.IsAuthenticated])
     def status_counts(self, request):
         """
         Custom action to get the count of leave applications by status (approved, rejected, pending)
         """
         user = request.user
-        
+
         # Initialize counts
         counts = {
             'approved': 0,
@@ -101,25 +127,12 @@ class LeaveApplicationViewSet(viewsets.ModelViewSet):
 
         return Response(counts, status=status.HTTP_200_OK)
 
-
-    def perform_create(self, serializer):
-        """
-        Automatically set the employee to the current user and validate
-        """
-        try:
-            leave_application = serializer.save(employee=self.request.user)
-            leave_application.clean()
-            leave_application.save()
-        except ValidationError as e:
-            raise serializers.ValidationError(e.message_dict)
-
     @action(detail=False, methods=['POST'], permission_classes=[IsManagerOrReadOnly])
     def approve(self, request):
         """
         Custom action to approve a leave application with 'pk' from request data
         """
         pk = request.data.get('pk')  # Extract 'pk' from request data
-        print(pk)
         if not pk:
             return Response(
                 {'error': 'PK is required in the request body'},
@@ -147,27 +160,21 @@ class LeaveApplicationViewSet(viewsets.ModelViewSet):
             leave_app.full_clean()  # Validate before saving
             leave_app.save()
 
-            # Deduct leave from employee's balance
-            # leave_app.employee.deduct_leave_balance(
-            #     leave_type=leave_app.leave_type, 
-            #     days=leave_app.duration
-            # )
-
             return Response({'status': 'Leave application approved'})
 
         except ValidationError as e:
             return Response(
-                {'error': str(e)}, 
+                {'error': str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
-    @action(detail=True, methods=['POST'], 
-            permission_classes=[IsManagerOrReadOnly])
+
+    @action(detail=True, methods=['POST'], permission_classes=[IsManagerOrReadOnly])
     def reject(self, request, pk=None):
         """
         Custom action to reject a leave application
         """
         leave_app = self.get_object()
-        
+
         if leave_app.status != 'pending':
             return Response(
                 {'error': 'Leave application can only be rejected if it is in pending status'},
@@ -177,9 +184,8 @@ class LeaveApplicationViewSet(viewsets.ModelViewSet):
         leave_app.status = 'rejected'
         leave_app.approver = request.user
         leave_app.save()
-        
-        return Response({'status': 'Leave application rejected'})
 
+        return Response({'status': 'Leave application rejected'})
 
 class LeaveStatusCountView(APIView):
     """
