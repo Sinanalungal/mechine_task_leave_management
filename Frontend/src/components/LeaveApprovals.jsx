@@ -36,6 +36,7 @@ const LeaveApprovals = () => {
                 setLeaveRequests(response.data.results);
                 setTotalPages(Math.ceil(response.data.count / 10));  // Dynamically set the total pages
                 setLoading(false);
+                
             } catch (err) {
                 setError('Failed to fetch leave requests');
                 setLoading(false);
@@ -46,6 +47,10 @@ const LeaveApprovals = () => {
 
         fetchLeaveRequests();
     }, [currentPage, filter]);  // Refetch data when page or filter changes
+
+    // const updateStatistics = (statisticFunc) =>{
+    //     statisticFunc()
+    // }
 
     // Memoized filtered requests (though we are fetching the filtered data already)
     const filteredRequests = useMemo(() => {
@@ -120,7 +125,7 @@ const LeaveApprovals = () => {
                     onPageChange={handlePageChange}
                 />
 
-                <LeaveStatistics requestStats={{ pending: 0, approved: 0, rejected: 0 }} />  {/* Placeholder for stats */}
+                <LeaveStatistics requestStats={{ pending: 0, approved: 0, rejected: 0 }}/>  
 
                 
                 <AnimatePresence>

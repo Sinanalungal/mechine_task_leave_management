@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { getAxiosInstance } from '../../utils/axiosInstance';
 
-const LeaveStatistics = () => {
+const LeaveStatistics = ({updateStatistics}) => {
     const [requestStats, setRequestStats] = useState({
         pending: 0,
         approved: 0,
@@ -22,23 +22,25 @@ const LeaveStatistics = () => {
         approved: 'bg-gradient-to-br from-[#11998e] to-[#38ef7d]',
         rejected: 'bg-gradient-to-br from-[#ff416c] to-[#ff4b2b]',
     };
+    const fetchLeaveStats = async () => {
+        try {
+            const axiosInstance = await getAxiosInstance()
+            const response = await axiosInstance('/leave/leave-applications/status_counts/');
+            console.log(response);
+            // const data = await response.json();
+            setRequestStats(response.data);
+            setLoading(false);
+        } catch (err) {
+            setError(err.message);
+            setLoading(false);
+            console.error('Fetch error:', err);
+        }
+    };
+
+    // updateStatistics(fetchLeaveStats)
 
     useEffect(() => {
-        const fetchLeaveStats = async () => {
-            try {
-                const axiosInstance = await getAxiosInstance()
-                const response = await axiosInstance('/leave/leave-applications/status_counts/');
-                console.log(response);
-                // const data = await response.json();
-                setRequestStats(response.data);
-                setLoading(false);
-            } catch (err) {
-                setError(err.message);
-                setLoading(false);
-                console.error('Fetch error:', err);
-            }
-        };
-
+        
         fetchLeaveStats();
     }, []);
 
