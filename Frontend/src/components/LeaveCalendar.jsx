@@ -12,7 +12,8 @@ import {
     Umbrella,
     Plane,
     Stethoscope,
-    MoreHorizontal
+    MoreHorizontal,
+    Calendar1
 } from 'lucide-react';
 import { getAxiosInstance } from '../utils/axiosInstance';
 
@@ -22,6 +23,11 @@ const LeaveCalendar = () => {
     const [selectedLeave, setSelectedLeave] = useState(null);
     const [leaveData, setLeaveData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [isNavigating, setIsNavigating] = useState(false);
+    const [isMonthYearModalOpen, setIsMonthYearModalOpen] = useState(false);
+
+    
 
     // Enhanced Leave Types (map backend leave types)
     const leaveTypes = {
@@ -35,38 +41,42 @@ const LeaveCalendar = () => {
     useEffect(() => {
         const fetchLeaveApplications = async () => {
             try {
-                const axiosInstance = await getAxiosInstance()
-                const response = await axiosInstance.get('/leave/leave-applications/', {});
+                setLoading(true);
+                setError(null);
+                const axiosInstance = await getAxiosInstance();
+                
+                const response = await axiosInstance.get('/leave/leave-applications/', {
+                    params: {
+                        year: selectedYear,
+                        month: selectedMonth + 1 // Backend typically uses 1-12 for months
+                    }
+                });
                 
                 const transformedLeaveData = response.data.results.map(leave => ({
                     id: leave.id,
-                    name: `${leave.leave_type?.name}`, 
-                    type: leave.leave_type?.name,
+                    name: `${leave.leave_type?.name || 'Unknown'}`, 
+                    type: leave.leave_type?.name || '4', // Default to Vacation if not specified
                     startDate: new Date(leave.start_date),
                     endDate: new Date(leave.end_date),
-                    status: leave.status.charAt(0).toUpperCase() + leave.status.slice(1),
-                    reason: leave.reason
+                    status: (leave.status || 'Pending').charAt(0).toUpperCase() + 
+                            (leave.status || 'Pending').slice(1),
+                    reason: leave.reason || 'No reason provided'
                 }));
-                console.log(response.data);
                 
                 setLeaveData(transformedLeaveData);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching leave applications:', error);
+                setError('Failed to fetch leave applications');
+                setLeaveData([]);
                 setLoading(false);
             }
         };
 
         fetchLeaveApplications();
-    }, []);
-
-    // Existing calendar generation logic
-    const getDaysInMonth = (month, year) => {
-        return new Date(year, month + 1, 0).getDate();
-    };
-
+    }, [selectedMonth, selectedYear]);
     const generateCalendarDays = () => {
-        const daysInMonth = getDaysInMonth(selectedMonth, selectedYear);
+        const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
         const firstDay = new Date(selectedYear, selectedMonth, 1).getDay();
         
         const days = [];
@@ -91,43 +101,80 @@ const LeaveCalendar = () => {
 
         return days;
     };
-    
-
     const monthNames = [
         'January', 'February', 'March', 'April', 'May', 'June', 
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
+    const yearRange = Array.from(
+        { length: 11 }, 
+        (_, index) => new Date().getFullYear() - 5 + index
+    );
 
     const calendarDays = generateCalendarDays();
+
+    const handleDirectDateSelect = (month, year) => {
+        setSelectedMonth(month);
+        setSelectedYear(year);
+        setIsMonthYearModalOpen(false);
+    };
 
     const handlePrevMonth = () => {
         setSelectedMonth(prev => {
             if (prev === 0) {
-                setSelectedYear(prev => prev - 1);
+                setSelectedYear(currentYear => currentYear - 1);
                 return 11;
             }
             return prev - 1;
         });
     };
-
+    
     const handleNextMonth = () => {
         setSelectedMonth(prev => {
             if (prev === 11) {
-                setSelectedYear(prev => prev + 1);
+                setSelectedYear(currentYear => currentYear + 1);
                 return 0;
             }
             return prev + 1;
         });
     };
 
-    // Calculate leave summary
+    // Calculate leave summary with robust error handling
     const leaveSummary = useMemo(() => {
+        const summary = { 
+            approved: 0, 
+            pending: 0, 
+            rejected: 0 
+        };
+
+        if (!leaveData || leaveData.length === 0) return summary;
+
         return leaveData.reduce((acc, leave) => {
-            acc[leave.status.toLowerCase()]++;
+            const status = leave.status.toLowerCase();
+            if (status in acc) {
+                acc[status]++;
+            }
             return acc;
-        }, { approved: 0, pending: 0, rejected: 0 });
+        }, summary);
     }, [leaveData]);
 
+    // Rest of the component remains the same...
+
+    // Add error handling to render
+    if (error) {
+        return (
+            <div className="flex justify-center items-center h-screen text-red-500">
+                {error}
+            </div>
+        );
+    }
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+            </div>
+        );
+    }
     
 
     return (
@@ -139,30 +186,34 @@ const LeaveCalendar = () => {
                 className="container mx-auto  max-w-full sm:max-w-5xl"
             >
                 {/* Header */}
+                {/* Header */}
                 <div className="bg-gradient-to-r from-indigo-600 to-purple-700 p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between rounded-t-2xl shadow-lg">
                     <h1 className="text-xl sm:text-2xl font-black text-white flex items-center mb-2 sm:mb-0">
                         <Calendar className="mr-2 sm:mr-3 w-6 h-6 sm:w-8 sm:h-8" /> Leave Tracker
                     </h1>
                     <div className="flex items-center space-x-2 sm:space-x-3">
                         <motion.button 
-                            onClick={handlePrevMonth}
+                            // onClick={handlePrevMonth}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             className="text-white/80 hover:text-white"
                         >
-                            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+                            <Calendar1 className="w-5 h-5 sm:w-6 sm:h-6" />
                         </motion.button>
-                        <div className="text-white font-semibold text-xs sm:text-sm">
+                        <div 
+                            className="text-white font-semibold text-xs sm:text-sm cursor-pointer"
+                            onClick={() => setIsMonthYearModalOpen(true)}
+                        >
                             {monthNames[selectedMonth]} {selectedYear}
                         </div>
-                        <motion.button 
+                        {/* <motion.button 
                             onClick={handleNextMonth}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             className="text-white/80 hover:text-white"
                         >
                             <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
-                        </motion.button>
+                        </motion.button> */}
                     </div>
                 </div>
 
@@ -313,6 +364,57 @@ const LeaveCalendar = () => {
                                             {selectedLeave.status}
                                         </span>
                                     </div>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+                <AnimatePresence>
+                    {isMonthYearModalOpen && (
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50"
+                            onClick={() => setIsMonthYearModalOpen(false)}
+                        >
+                            <motion.div
+                                initial={{ scale: 0.8, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                exit={{ scale: 0.8, opacity: 0 }}
+                                className="bg-white rounded-lg p-4 sm:p-6 max-w-xs sm:max-w-md w-full shadow-2xl"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <h3 className="text-lg font-bold mb-4 text-center">Select Month and Year</h3>
+                                <div className="grid grid-cols-3 gap-2 mb-4">
+                                    {monthNames.map((month, index) => (
+                                        <button
+                                            key={month}
+                                            onClick={() => handleDirectDateSelect(index, selectedYear)}
+                                            className={`p-2 rounded ${
+                                                selectedMonth === index 
+                                                    ? 'bg-indigo-500 text-white' 
+                                                    : 'bg-gray-100 hover:bg-gray-200'
+                                            }`}
+                                        >
+                                            {month.substring(0, 3)}
+                                        </button>
+                                    ))}
+                                </div>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {yearRange.map((year) => (
+                                        <button
+                                            key={year}
+                                            onClick={() => handleDirectDateSelect(selectedMonth, year)}
+                                            className={`p-2 rounded ${
+                                                selectedYear === year 
+                                                    ? 'bg-indigo-500 text-white' 
+                                                    : 'bg-gray-100 hover:bg-gray-200'
+                                            }`}
+                                        >
+                                            {year}
+                                        </button>
+                                    ))}
                                 </div>
                             </motion.div>
                         </motion.div>

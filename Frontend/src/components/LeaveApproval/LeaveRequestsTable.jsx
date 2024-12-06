@@ -1,11 +1,6 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-    CheckCircle, 
-    XCircle, 
-    Calendar, 
-    Info,
-} from 'lucide-react';
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { CheckCircle, XCircle, Calendar, Info } from "lucide-react";
 
 const LeaveRequestsTable = ({
   filteredRequests,
@@ -83,10 +78,10 @@ const LeaveRequestsTable = ({
                   className={`
                                                 px-2 py-1 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold
                                                 ${
-                                                  request.status === "Pending"
+                                                  request.status === "pending"
                                                     ? "bg-gradient-to-r from-orange-300 to-orange-500 text-white"
                                                     : request.status ===
-                                                      "Approved"
+                                                      "approved"
                                                     ? "bg-gradient-to-r from-green-400 to-green-600 text-white"
                                                     : "bg-gradient-to-r from-red-400 to-red-600 text-white"
                                                 }

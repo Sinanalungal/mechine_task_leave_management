@@ -152,14 +152,14 @@ const LoginPage = () => {
               </div>
 
               {/* Forgot Password */}
-              <div className="flex justify-end">
+              {/* <div className="flex justify-end">
                 <a
                   href="#"
                   className="text-sm text-indigo-600 hover:text-indigo-800 transition-colors flex items-center"
                 >
                   Forgot Password? <ArrowUpRight className="ml-1 w-4 h-4" />
                 </a>
-              </div>
+              </div> */}
 
               {/* Submit Button */}
               <motion.button
@@ -174,7 +174,7 @@ const LoginPage = () => {
               </motion.button>
 
               {/* Sign Up Link */}
-              <div className="text-center text-sm text-gray-600 mt-4">
+              {/* <div className="text-center text-sm text-gray-600 mt-4">
                 Don't have an account? {' '}
                 <Link
                   to="/register"
@@ -182,7 +182,7 @@ const LoginPage = () => {
                 >
                   Sign Up
                 </Link>
-              </div>
+              </div> */}
             </motion.form>
           </div>
         </div>

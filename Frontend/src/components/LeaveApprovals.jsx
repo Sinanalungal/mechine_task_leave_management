@@ -54,6 +54,29 @@ const LeaveApprovals = () => {
         );
     }, [leaveRequests, filter]);
 
+    const handleLeaveAction = async (id, action) => {
+        try {
+            const axiosInstance = await getAxiosInstance();
+            const endpoint = action === 'approve' 
+                ? `/leave/leave-applications/approve/`
+                : `/leave/leave-applications/${id}/reject/`;
+            
+            await axiosInstance.post(endpoint,{pk:id});
+            
+            // Update local state to reflect the change
+            setLeaveRequests(prevRequests => 
+                prevRequests.map(request => 
+                    request.id === id 
+                        ? { ...request, status: action === 'approve' ? 'approved' : 'rejected' }
+                        : request
+                )
+            );
+        } catch (err) {
+            setError(`Failed to ${action} leave request`);
+            console.log(err);
+            
+        }
+    };
     // Pagination handlers
     const handlePageChange = (newPage) => {
         if (newPage >= 1 && newPage <= totalPages) {
@@ -88,6 +111,7 @@ const LeaveApprovals = () => {
                 <LeaveRequestsTable 
                     filteredRequests={filteredRequests}
                     setSelectedRequest={setSelectedRequest}
+                    handleLeaveAction={handleLeaveAction}
                 />
 
                 <Pagination 
