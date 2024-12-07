@@ -7,13 +7,12 @@ set -e
 
 echo "Applying migrations..."
 python manage.py migrate --noinput
+python Backend/manage.py migrate --noinput
 
-# Conditionally create a superuser if the CREATE_SUPERUSER environment variable is set
-if [[ $CREATE_SUPERUSER ]];
-then
-  echo "Creating superuser..."
-  python manage.py createsuperuser --no-input
-fi
+
+echo "Creating superuser..."
+python manage.py createsuperuser --no-input
+python Backend/manage.py createsuperuser --no-input
 
 
 echo "Build script completed successfully."
