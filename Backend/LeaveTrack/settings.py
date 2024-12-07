@@ -61,6 +61,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'LeaveTrack.urls'
 
+CSRF_TRUSTED_ORIGINS = ["https://chatterbox-demo.onrender.com/"]
+
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
