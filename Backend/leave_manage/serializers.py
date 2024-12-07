@@ -16,7 +16,7 @@ class LeaveTypeSerializer(serializers.ModelSerializer):
 
 class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CustomUser  # Replace with your Employee model name
+        model = CustomUser
         fields = ['id', 'profile_picture', 'first_name','last_name', 'department']  # Adjust fields as needed
 
 class LeaveApplicationReadSerializer(serializers.ModelSerializer):
@@ -41,7 +41,6 @@ class LeaveApplicationWriteSerializer(serializers.ModelSerializer):
         model = LeaveApplication
         fields = '__all__'
         read_only_fields = ['status', 'approver', 'duration', 'created_at', 'updated_at']
-        # depth = 2
 
     def validate(self, data):
         """

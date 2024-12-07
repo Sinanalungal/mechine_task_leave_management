@@ -20,7 +20,7 @@ class AccessTokenManager {
     console.log('refreshing token...');
     const refreshToken = this.user.refresh;
     try {
-      const response = await axios.post(`http://localhost:8000/user_authentication/token/refresh/`, { refresh: refreshToken });
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user_authentication/token/refresh/`, { refresh: refreshToken });
       console.log(response, 'refreshtoken response');
       console.log(response.data, 'new token gets ');
 

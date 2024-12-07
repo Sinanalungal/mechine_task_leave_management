@@ -1,10 +1,9 @@
-from rest_framework import viewsets, permissions,serializers,status
+from rest_framework import viewsets, permissions, serializers, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import LeaveApplication, LeaveType
-# , LeaveBalance
 from .serializers import (
-    LeaveApplicationWriteSerializer, 
+    LeaveApplicationWriteSerializer,
     LeaveApplicationReadSerializer,
     LeaveTypeSerializer,
 )
@@ -13,10 +12,6 @@ from django.core.exceptions import ValidationError
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from rest_framework.views import APIView
-
-
-
-
 
 
 class LeaveTypeViewSet(viewsets.ModelViewSet):
@@ -29,21 +24,14 @@ class LeaveTypeViewSet(viewsets.ModelViewSet):
     pagination_class = None
 
 
-from rest_framework import viewsets, status
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import OrderingFilter
-from rest_framework.exceptions import ValidationError
-
 class LeaveApplicationViewSet(viewsets.ModelViewSet):
     """
     Enhanced ViewSet for leave applications with comprehensive validation
     """
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, OrderingFilter]
-    filterset_fields = ['status']  # Allow filtering by 'status'
-    ordering_fields = ['created_at']  # Allow ordering by 'created_at'
+    filterset_fields = ['status'] 
+    ordering_fields = ['created_at'] 
 
     def get_serializer_class(self):
         """
@@ -176,14 +164,15 @@ class LeaveApplicationViewSet(viewsets.ModelViewSet):
 
         return Response({'status': 'Leave application rejected'})
 
+
 class LeaveStatusCountView(APIView):
     """
     Custom action to get the count of leave applications by status (approved, rejected, pending)
     """
-    
+
     def get(self, request, *args, **kwargs):
         user = request.user
-        
+
         # Initialize counts
         counts = {
             'approved': 0,
@@ -204,4 +193,3 @@ class LeaveStatusCountView(APIView):
         counts['pending'] = queryset.filter(status='pending').count()
 
         return Response(counts, status=status.HTTP_200_OK)
-

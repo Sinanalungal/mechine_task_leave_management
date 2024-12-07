@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import UserPrivateRoute from "./private-routes/UserPrivateRoute";
 import LeaveApplication from '../pages/LeaveApplication';
 import LeaveCalendar from '../pages/LeaveCalendar';
+import WelcomeComponent from "../pages/UserFirstPage";
 
 function UserRoutes() {
 
@@ -16,7 +17,7 @@ function UserRoutes() {
     >
       <Routes>
         <Route path="*" element={<UserPrivateRoute />}>
-            <Route path="" element={<div>Dashboard</div>} />
+            <Route path="" element={<WelcomeComponent/>} />
             <Route path="apply-leave" element={<LeaveApplication />} />
             <Route path="leave-calendar" element={<LeaveCalendar />} />
         </Route>

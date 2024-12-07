@@ -13,7 +13,7 @@ export const loginAsync = createAsyncThunk(
   'login/loginAsync',
   async (loginData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`http://localhost:8000/user_authentication/token/`, loginData);
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user_authentication/token/`, loginData);
       const tokens = { access: response?.data?.access, refresh: response?.data?.refresh };
       localStorage.setItem('LeaveTrackTokens', JSON.stringify(tokens));
       console.log(response.data);
