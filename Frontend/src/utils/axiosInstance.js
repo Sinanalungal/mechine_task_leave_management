@@ -6,7 +6,7 @@ export const getAxiosInstance = async () => {
   const parsedTokens = authTokens ? JSON.parse(authTokens) : null;
     console.log(parsedTokens,'this is the parsed token from axios instance');
     
-  const accessTokenManager = new AccessTokenManager(`${import.meta.env.VITE_BASE_URL}`, parsedTokens);
+  const accessTokenManager = new AccessTokenManager(`https://mechine-task-leave-management.onrender.com`, parsedTokens);
   const axiosInstance = await accessTokenManager.createAxiosInstance();
 
   axiosInstance.defaults.withCredentials = true;

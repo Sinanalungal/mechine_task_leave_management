@@ -13,7 +13,7 @@ export const loginAsync = createAsyncThunk(
   'login/loginAsync',
   async (loginData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user_authentication/token/`, loginData);
+      const response = await axios.post(`https://mechine-task-leave-management.onrender.com/user_authentication/token/`, loginData);
       const tokens = { access: response?.data?.access, refresh: response?.data?.refresh };
       localStorage.setItem('LeaveTrackTokens', JSON.stringify(tokens));
       console.log(response.data);
@@ -59,30 +59,3 @@ export const { logout } = loginSlice.actions;
 export default loginSlice.reducer;
 
 
-
-// import { createSlice } from '@reduxjs/toolkit';
-
-// const initialState = {
-//   user: null,
-//   name:"",
-//   isAuthenticated: false,
-//   role: null,
-// };
-
-// const loginSlice = createSlice({
-//   name: 'login',
-//   initialState,
-//   reducers: {
-//     login(state, action) {
-//       state.isAuthenticated = true;
-//       state.role = action.payload.role;
-//     },
-//     logout(state) {
-//       state.isAuthenticated = false;
-//       state.role = '';
-//     },
-//   },
-// });
-
-// export const { login, logout } = loginSlice.actions;
-// export default loginSlice.reducer;
