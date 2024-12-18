@@ -50,18 +50,27 @@ const LeaveCalendar = () => {
           },
         });
 
-        const transformedLeaveData = response.data.results.map((leave) => ({
-          id: leave.id,
-          name: `${leave.leave_type?.name || "Unknown"}`,
-          type: leave.leave_type?.name || "4", // Default to Vacation if not specified
-          startDate: new Date(leave.start_date),
-          endDate: new Date(leave.end_date),
-          status:
-            (leave.status || "Pending").charAt(0).toUpperCase() +
-            (leave.status || "Pending").slice(1),
-          reason: leave.reason || "No reason provided",
-        }));
+        const transformedLeaveData = response.data.results.map((leave) => {
+          const startDate = new Date(leave.start_date);
+          const endDate = new Date(leave.end_date);
+          
+          // Ensure dates are set to start and end of day
+          startDate.setHours(0, 0, 0, 0);
+          endDate.setHours(23, 59, 59, 999);
 
+          return {
+            id: leave.id,
+            name: `${leave.leave_type?.name || "Unknown"}`,
+            type: leave.leave_type?.name || "4", 
+            startDate: startDate,
+            endDate: endDate,
+            status: (leave.status || "Pending").charAt(0).toUpperCase() + 
+                    (leave.status || "Pending").slice(1),
+            reason: leave.reason || "No reason provided",
+          };
+        });
+
+        console.log("Transformed Leave Data:", transformedLeaveData);
         setLeaveData(transformedLeaveData);
         setLoading(false);
       } catch (error) {
@@ -74,6 +83,8 @@ const LeaveCalendar = () => {
 
     fetchLeaveApplications();
   }, [selectedMonth, selectedYear]);
+
+
   const generateCalendarDays = () => {
     const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
     const firstDay = new Date(selectedYear, selectedMonth, 1).getDay();
@@ -88,10 +99,24 @@ const LeaveCalendar = () => {
     // Add actual days
     for (let day = 1; day <= daysInMonth; day++) {
       const currentDate = new Date(selectedYear, selectedMonth, day);
-      const leavesOnDay = leaveData.filter(
-        (leave) =>
-          currentDate >= leave.startDate && currentDate <= leave.endDate
-      );
+      currentDate.setHours(0, 0, 0, 0); // Reset time for accurate comparison
+
+      const leavesOnDay = leaveData.filter((leave) => {
+        // Debugging log
+        console.log(`Checking leave for day ${day}:`, {
+          currentDate,
+          startDate: leave.startDate,
+          endDate: leave.endDate,
+          // Comparison checks
+          isAfterOrEqualStart: currentDate >= leave.startDate,
+          isBeforeOrEqualEnd: currentDate <= leave.endDate
+        });
+
+        return (
+          currentDate >= leave.startDate && 
+          currentDate <= leave.endDate
+        );
+      });
 
       days.push({
         day,
@@ -101,20 +126,12 @@ const LeaveCalendar = () => {
 
     return days;
   };
+
   const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"
   ];
+
   const yearRange = Array.from(
     { length: 11 },
     (_, index) => new Date().getFullYear() - 5 + index
@@ -167,9 +184,7 @@ const LeaveCalendar = () => {
     }, summary);
   }, [leaveData]);
 
-  // Rest of the component remains the same...
 
-  // Add error handling to render
   if (error) {
     return (
       <div className="flex justify-center items-center h-screen text-red-500">
@@ -196,7 +211,7 @@ const LeaveCalendar = () => {
       >
         {/* Header */}
         {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-700 p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between rounded-t-2xl shadow-lg">
+        <div className="bg-slate-700 p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-between rounded-t-2xl shadow-lg">
           <h1 className="text-xl sm:text-2xl font-black text-white flex items-center mb-2 sm:mb-0">
             <Calendar className="mr-2 sm:mr-3 w-6 h-6 sm:w-8 sm:h-8" /> Leave
             Tracker
@@ -458,7 +473,7 @@ const LeaveCalendar = () => {
                       }
                       className={`p-2 rounded ${
                         selectedMonth === index
-                          ? "bg-indigo-500 text-white"
+                          ? "bg-slate-800 text-white"
                           : "bg-gray-100 hover:bg-gray-200"
                       }`}
                     >
@@ -475,7 +490,7 @@ const LeaveCalendar = () => {
                       }
                       className={`p-2 rounded ${
                         selectedYear === year
-                          ? "bg-indigo-500 text-white"
+                          ? "bg-slate-800 text-white"
                           : "bg-gray-100 hover:bg-gray-200"
                       }`}
                     >

@@ -40,13 +40,13 @@ const Sidebar = () => {
       icon: ClipboardList,
       label: "Apply Leave",
       path: "/apply-leave",
-      gradient: "from-emerald-400 to-teal-500",
+      gradient: "from-slate-900 to-gray-500",
     },
     {
       icon: Calendar,
       label: "Leave Calendar",
       path: "/leave-calendar",
-      gradient: "from-amber-400 to-orange-500",
+      gradient: "from-slate-900 to-gray-500",
     },
   ];
 
@@ -55,27 +55,26 @@ const Sidebar = () => {
       icon: Home,
       label: "Dashboard",
       path: "/",
-      gradient: "from-indigo-400 to-purple-500",
+      gradient: "from-slate-900 to-gray-500",
     },
     {
       icon: UserPlus,
       label: "Add Users",
       path: "/add-user",
-      gradient: "from-amber-400 to-orange-500",
+      gradient: "from-slate-900 to-gray-500",
     },
-    // { icon: ClipboardList, label: 'Apply Leave', path: '/apply-leave', gradient: 'from-emerald-400 to-teal-500' },
-    // { icon: Calendar, label: 'Leave Calendar', path: '/leave-calendar', gradient: 'from-amber-400 to-orange-500' },
+
     {
       icon: UserCheck,
       label: "Leave Approvals",
       path: "/leave-approvals",
-      gradient: "from-rose-400 to-pink-500",
+      gradient: "from-slate-900 to-gray-500",
     },
     {
       icon: UserCircle2,
       label: "Profile",
       path: "/profile",
-      gradient: "from-sky-400 to-blue-500",
+      gradient: "from-slate-900 to-gray-500",
     },
   ];
   const sidebarItems =
@@ -93,10 +92,7 @@ const Sidebar = () => {
         animate={{ opacity: 1, y: 0 }}
         className="mb-12 flex items-center justify-center space-x-3"
       >
-        <Zap className="w-10 h-10 text-indigo-500" />
-        <h1 className="text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600">
-          Leave Manager
-        </h1>
+        <img src="/logo.png" className="object-contain max-h-[100px] " alt="LeaveTracker" />
       </motion.div>
 
       <nav className="space-y-4 flex-grow">

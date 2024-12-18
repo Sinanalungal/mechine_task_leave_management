@@ -16,18 +16,18 @@ const LeaveStatistics = ({updateStatistics}) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Color palette for each status
+    // Monochrome color palette
     const colorPalette = {
-        pending: 'bg-gradient-to-br from-[#ff9966] to-[#ff5e62]',
-        approved: 'bg-gradient-to-br from-[#11998e] to-[#38ef7d]',
-        rejected: 'bg-gradient-to-br from-[#ff416c] to-[#ff4b2b]',
+        pending: 'bg-yellow-100 text-gray-900 border border-gray-300',
+        approved: 'bg-green-100 text-gray-900 border border-gray-300',
+        rejected: 'bg-red-100 text-gray-900 border border-gray-300',
     };
+
     const fetchLeaveStats = async () => {
         try {
             const axiosInstance = await getAxiosInstance()
             const response = await axiosInstance('/leave/leave-applications/status_counts/');
             console.log(response);
-            // const data = await response.json();
             setRequestStats(response.data);
             setLoading(false);
         } catch (err) {
@@ -37,19 +37,16 @@ const LeaveStatistics = ({updateStatistics}) => {
         }
     };
 
-    // updateStatistics(fetchLeaveStats)
-
     useEffect(() => {
-        
         fetchLeaveStats();
     }, []);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div className="text-gray-600">Loading...</div>;
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return <div className="text-red-600">Error: {error}</div>;
     }
 
     return (
@@ -62,19 +59,19 @@ const LeaveStatistics = ({updateStatistics}) => {
             {[
                 { 
                     icon: Clock, 
-                    gradient: colorPalette.pending,
+                    palette: colorPalette.pending,
                     label: 'Pending Requests', 
                     value: requestStats.pending 
                 },
                 { 
                     icon: CheckCircle, 
-                    gradient: colorPalette.approved,
+                    palette: colorPalette.approved,
                     label: 'Approved Requests', 
                     value: requestStats.approved 
                 },
                 { 
                     icon: XCircle, 
-                    gradient: colorPalette.rejected,
+                    palette: colorPalette.rejected,
                     label: 'Rejected Requests', 
                     value: requestStats.rejected 
                 }
@@ -83,16 +80,16 @@ const LeaveStatistics = ({updateStatistics}) => {
                     key={stat.label}
                     whileHover={{ scale: 1.05 }}
                     className={`
-                        ${stat.gradient} p-6 rounded-3xl shadow-2xl flex items-center 
-                        text-white relative overflow-hidden
+                        ${stat.palette} p-6 rounded-3xl shadow-lg flex items-center 
+                        relative overflow-hidden
                     `}
                 >
                     <div className="absolute -top-4 -right-4 opacity-20">
                         <stat.icon className="w-24 h-24" />
                     </div>
                     <div className="z-10">
-                        <div className="text-sm opacity-80">{stat.label}</div>
-                        <div className="text-3xl font-black">{stat.value}</div>
+                        <div className="text-sm opacity-70">{stat.label}</div>
+                        <div className="text-3xl font-bold">{stat.value}</div>
                     </div>
                 </motion.div>
             ))}

@@ -12,7 +12,7 @@ const LoadingSpinner = () => (
                 ease: "linear" 
             }}
         >
-            <Clock className="w-12 h-12 text-purple-600" />
+            <Clock className="w-12 h-12 text-slate-800" />
         </motion.div>
     </div>
 );

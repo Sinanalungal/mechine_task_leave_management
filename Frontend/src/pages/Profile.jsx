@@ -212,10 +212,10 @@ const Profile = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
           <div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 mb-2">
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-700 to-slate-600 mb-2">
               User Profile
             </h1>
-            <p className="text-gray-500 font-medium text-base sm:text-lg">
+            <p className="text-gray-500/80 font-medium text-base sm:text-lg">
               Manage your professional information
             </p>
           </div>
@@ -228,7 +228,7 @@ const Profile = () => {
                             ${
                               editMode
                                 ? "bg-emerald-600 text-white hover:bg-emerald-700"
-                                : "bg-indigo-600 text-white hover:bg-indigo-700"
+                                : "bg-slate-700 text-white hover:bg-slate-800"
                             } font-semibold text-sm
                         `}
           >
@@ -307,8 +307,8 @@ const Profile = () => {
             className="lg:col-span-2 bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 relative"
           >
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center">
-                <Users className="mr-3" /> Contact Information
+              <h3 className="text-xl font-bold text-slate-800 bg-clip-text bg-gradient-to-r from-slate-700 to-slate-600 flex items-center">
+                <Users className="mr-3 " /> Contact Information
               </h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

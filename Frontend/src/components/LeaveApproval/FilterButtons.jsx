@@ -7,32 +7,35 @@ import {
     Filter, 
 } from 'lucide-react';
 
-
 const FilterButtons = ({ filter, setFilter, isMobileMenuOpen, setIsMobileMenuOpen }) => {
     const filterButtons = [
         { 
             label: 'All Requests', 
             value: 'all', 
             icon: Filter,
-            gradient: 'bg-gradient-to-r from-purple-500 to-blue-500'
+            activeClass: 'bg-slate-700 text-white',
+            inactiveClass: 'bg-gray-100 text-gray-700 hover:bg-gray-200'
         },
         { 
             label: 'Pending', 
             value: 'pending', 
             icon: Clock,
-            gradient: 'bg-gradient-to-br from-[#ff9966] to-[#ff5e62]'
+            activeClass: 'bg-slate-700 text-white',
+            inactiveClass: 'bg-gray-100 text-gray-700 hover:bg-gray-200'
         },
         { 
             label: 'Approved', 
             value: 'approved', 
             icon: CheckCircle,
-            gradient: 'bg-gradient-to-br from-[#11998e] to-[#38ef7d]'
+            activeClass: 'bg-slate-700 text-white',
+            inactiveClass: 'bg-gray-100 text-gray-700 hover:bg-gray-200'
         },
         { 
             label: 'Rejected', 
             value: 'rejected', 
             icon: XCircle,
-            gradient: 'bg-gradient-to-br from-[#ff416c] to-[#ff4b2b]'
+            activeClass: 'bg-slate-700 text-white',
+            inactiveClass: 'bg-gray-100 text-gray-700 hover:bg-gray-200'
         }
     ];
 
@@ -50,10 +53,10 @@ const FilterButtons = ({ filter, setFilter, isMobileMenuOpen, setIsMobileMenuOpe
                     className={`
                         flex items-center ${mobile ? 'justify-center' : 'px-4 sm:px-5 py-2 sm:py-3'}
                         rounded-xl font-bold text-xs sm:text-sm transition-all
-                        text-white shadow-lg hover:shadow-xl
+                        border border-gray-200 shadow-sm
                         ${filter === btn.value 
-                            ? btn.gradient 
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}
+                            ? btn.activeClass 
+                            : btn.inactiveClass}
                     `}
                 >
                     <btn.icon className={`mr-2 ${mobile ? 'w-4 h-4' : 'sm:mr-3 w-4 h-4 sm:w-5 sm:h-5'}`} />

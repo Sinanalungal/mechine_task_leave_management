@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React from 'react';
 
 
@@ -27,3 +28,13 @@ export const SubmitButton = ({
     </div>
   );
 };
+
+const handleLogin = ()=> {
+  try {
+    const response = axios.get('http,odn')
+    return response.data
+  } catch (error) {
+    console.log(response.data)
+    throw Error
+  }
+}

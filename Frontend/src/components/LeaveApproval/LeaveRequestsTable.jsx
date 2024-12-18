@@ -14,7 +14,7 @@ const LeaveRequestsTable = ({
     className="bg-white shadow-2xl overflow-x-auto rounded-3xl overflow-hidden border-2 border-purple-50"
   >
     <table className="w-full min-w-[800px]">
-      <thead className="bg-gradient-to-r from-purple-100 to-blue-100 border-b-2 border-purple-200">
+      <thead className="bg-slate-700 border-b-2 border-purple-200">
         <tr>
           {[
             "Employee",
@@ -27,7 +27,7 @@ const LeaveRequestsTable = ({
           ].map((header) => (
             <th
               key={header}
-              className="p-4 text-left text-xs uppercase tracking-wider text-black font-bold"
+              className="p-4 text-left text-xs uppercase tracking-wider text-white font-bold"
             >
               {header}
             </th>

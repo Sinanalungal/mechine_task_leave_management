@@ -62,7 +62,7 @@ const RecentLeaveRequests = () => {
             transition={{ delay: 0.6 }}
             className="bg-white rounded-3xl shadow-2xl overflow-hidden"
         >
-            <div className="p-4 sm:p-6 bg-gradient-to-r from-indigo-600 to-purple-700 flex items-center justify-between">
+            <div className="p-4 sm:p-6 bg-gradient-to-r from-slate-800 to-slate-700 flex items-center justify-between">
                 <h2 className="text-base sm:text-xl font-bold text-white flex items-center">
                     <Inbox className="mr-2 sm:mr-3 w-5 h-5 sm:w-6 sm:h-6" /> Recent Leave Requests
                 </h2>
